@@ -1,34 +1,40 @@
 <?php
 namespace Opencart\Catalog\Model\Extension\Begateway\Payment;
 class Begateway extends \Opencart\System\Engine\Model {
-  public function getMethod($address, $total) {
-    $this->load->language('extension/payment/begateway');
+  public function getMethods(array $address = []): array {
+    $this->load->language('extension/begateway/payment/begateway');
 
-    $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('payment_begateway_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
-
-    if ($this->config->get('payment_begateway_total') > 0 && $this->config->get('payment_begateway_total') > $total) {
-      $status = false;
+    if ($this->cart->hasSubscription()) {
+        $status = false;
     } elseif (!$this->config->get('payment_begateway_geo_zone_id')) {
-      $status = true;
-    } elseif ($query->num_rows) {
-      $status = true;
+        $status = true;
     } else {
-      $status = false;
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('payment_begateway_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+        // if the rows found the status set to True
+        if ($query->num_rows) {
+            $status = true;
+        } else {
+            $status = false;
+        }
     }
 
     $method_data = array();
 
     if ($status) {
-      $method_data = array(
-        'code'       => 'begateway',
-        'title'      => $this->language->get('text_title'),
-        'terms'      => '',
-        'sort_order' => $this->config->get('payment_begateway_sort_order')
+
+        $option_data['begateway'] = [
+            'code' => 'begateway.begateway',
+            'name' => $this->language->get('text_title')
+        ];
+
+        $method_data = array(
+            'code'       => 'begateway',
+            'name'       => $this->language->get('text_title'),
+            'option'     => $option_data,
+            'sort_order' => $this->config->get('payment_begateway_sort_order')
       );
     }
 
     return $method_data;
   }
 }
-
-?>

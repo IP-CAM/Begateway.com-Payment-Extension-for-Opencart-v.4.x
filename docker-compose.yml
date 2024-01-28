@@ -12,8 +12,8 @@ services:
     cap_add:
       - NET_ADMIN
     tty: true
-    # volumes:
-      # - ./upload:/var/www/html/extension/begateway
+    volumes:
+      - ./upload:/var/www/html/extension/begateway
       # - ./upload/admin/controller/extension/payment/begateway.php:/var/www/html/admin/controller/extension/payment/begateway.php
       # - ./upload/admin/language/en-gb/extension/payment/begateway.php:/var/www/html/admin/language/en-gb/extension/payment/begateway.php
       # - ./upload/admin/language/ru-ru/extension/payment/begateway.php:/var/www/html/admin/language/ru-ru/extension/payment/begateway.php

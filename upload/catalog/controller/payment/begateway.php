@@ -1,167 +1,107 @@
 <?php
 namespace Opencart\Catalog\Controller\Extension\Begateway\Payment;
-class Begateway extends \Opencart\System\Engine\Controller {
-  const API_VERSION = 2;
 
-  public function index() {
-    $this->language->load('extension/payment/begateway');
+require_once DIR_EXTENSION . 'begateway/system/library/vendor/autoload.php';
+
+class Begateway extends \Opencart\System\Engine\Controller {
+  public function __construct($registry)
+	{
+		parent::__construct($registry);
+
+        \BeGateway\Settings::$checkoutBase = 'https://' . $this->config->get('payment_begateway_domain_payment_page');
+        \BeGateway\Settings::$shopId = $this->config->get('payment_begateway_companyid');
+        \BeGateway\Settings::$shopKey = $this->config->get('payment_begateway_encyptionkey');
+        \BeGateway\Settings::$shopPubKey = $this->config->get('payment_begateway_publickey');
+	}
+
+  public function index(): string {
+    $this->language->load('extension/begateway/payment/begateway');
     $this->load->model('checkout/order');
 
-    $checkout_data = $this->generateToken();
-
-    if ($checkout_data) {
-      $data['action'] = strtok($checkout_data['redirect_url'], '?');
-      $data['token'] = $checkout_data['token'];
-    } else {
-      $data['token'] = false;
-    }
-
     $data['button_confirm'] = $this->language->get('button_confirm');
-    $data['token_error'] = $this->language->get('token_error');
-    $data['order_id'] = $this->session->data['order_id'];
+    $data['confirm_url'] = $this->url->link('extension/begateway/payment/begateway|confirm', '', true);
 
-    return $this->load->view('extension/payment/begateway', $data);
+    return $this->load->view('extension/begateway/payment/begateway', $data);
   }
 
   public function generateToken(){
 
+    $token = new \BeGateway\GetPaymentToken;
+
     $this->load->model('checkout/order');
     $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-    $orderAmount = $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false);
-    $orderAmount = (float)$orderAmount * pow(10,(int)$this->currency->getDecimalPlace($order_info['currency_code']));
-    $orderAmount = intval(strval($orderAmount));
+    $order_amount = $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false);
 
-    $customer_array =  array (
-      'address' => strlen($order_info['payment_address_1']) > 0 ? $order_info['payment_address_1'] : null,
-      'first_name' => strlen($order_info['payment_firstname']) > 0 ? $order_info['payment_firstname'] : null,
-      'last_name' => strlen($order_info['payment_lastname']) > 0 ? $order_info['payment_lastname'] : null,
-      'country' => strlen($order_info['payment_iso_code_2']) > 0 ? $order_info['payment_iso_code_2'] : null,
-      'city'=> strlen($order_info['payment_city']) > 0 ? $order_info['payment_city'] : null,
-      'phone' => strlen($order_info['telephone']) > 0 ? $order_info['telephone'] : null,
-      'email'=> strlen($order_info['email']) > 0 ? $order_info['email'] : null,
-      'zip' => strlen($order_info['payment_postcode']) > 0 ? $order_info['payment_postcode'] : null,
-      'ip' => $this->request->server['REMOTE_ADDR']
-    );
+    $token->setTrackingId($order_info['order_id']);
+    $token->money->setCurrency($order_info['currency_code']);
+    $token->money->setAmount($order_amount);
+    $token->setDescription($this->language->get('text_order'). ' ' .$order_info['order_id']);
 
-    if (in_array($order_info['payment_iso_code_2'], array('US','CA'))) {
-      $customer_array['state'] = $order_info['payment_zone_code'];
+    $token->customer->setFirstName(strlen($order_info['payment_firstname']) > 0 ? $order_info['payment_firstname'] : null);
+    $token->customer->setLastName(strlen($order_info['payment_lastname']) > 0 ? $order_info['payment_lastname'] : null);
+    $token->customer->setCountry(strlen($order_info['payment_iso_code_2']) > 0 ? $order_info['payment_iso_code_2'] : null);
+    $token->customer->setCity(strlen($order_info['payment_city']) > 0 ? $order_info['payment_city'] : null);
+    $token->customer->setPhone(strlen($order_info['telephone']) > 0 ? $order_info['telephone'] : null);
+    $token->customer->setZip(strlen($order_info['payment_postcode']) > 0 ? $order_info['payment_postcode'] : null);
+    $token->customer->setAddress(strlen($order_info['payment_address_1']) > 0 ? $order_info['payment_address_1'] : null);
+    $token->customer->setEmail(strlen($order_info['email']) > 0 ? $order_info['email'] : null);
+
+    if (in_array($token->customer->getCountry(), array('US', 'CA'))) {
+        $token->customer->setState($order_info['payment_zone_code']);
     }
 
-    $order_array = array ( 'currency'=> $order_info['currency_code'],
-      'amount' => $orderAmount,
-      'description' => $this->language->get('text_order'). ' ' .$order_info['order_id'],
-      'tracking_id' => $order_info['order_id']);
+    $callback_url = $this->url->link('extension/begateway/payment/begateway|webhook', '', 'SSL');
+    $callback_url = str_replace('0.0.0.0', '87fe-178-127-77-205.ngrok-free.app', $callback_url);
+    $callback_url = str_replace('0.0.0.0', 'webhook.begateway.com:8443', $callback_url);
+    
+    $token->setSuccessUrl($this->url->link('extension/begateway/payment/begateway|return', '', 'SSL'));
+    $token->setDeclineUrl($this->url->link('checkout/checkout', 'language=' . $this->config->get('config_language'), 'SSL'));
+    $token->setFailUrl($this->url->link('checkout/checkout', 'language=' . $this->config->get('config_language'), 'SSL'));
+    $token->setCancelUrl($this->url->link('checkout/checkout', 'language=' . $this->config->get('config_language'), 'SSL'));
+    $token->setNotificationUrl($callback_url);
 
-    $callback_url = $this->url->link('extension/payment/begateway/callback1', '', 'SSL');
-    $callback_url = str_replace('carts.local', 'webhook.begateway.com:8443', $callback_url);
+    #$token->setExpiryDate(date("c", intval($this->settings['payment_valid']) * 60 + time() + 1));
 
-    $setting_array = array ( 'success_url'=>$this->url->link('extension/payment/begateway/callback', '', 'SSL'),
-      'decline_url'=> $this->url->link('checkout/checkout', '', 'SSL'),
-      'cancel_url'=> $this->url->link('checkout/checkout', '', 'SSL'),
-      'fail_url'=>$this->url->link('checkout/checkout', '', 'SSL'),
-      'language' => $this->_language($this->session->data['language']),
-      'notification_url'=> $callback_url);
-
-    $transaction_type='payment';
-
-    $payment_methods_array = array(
-      'types' => array(
-      )
-    );
+    $token->setLanguage($this->_language($this->config->get('config_language')));
 
     $pm_type = $this->config->get('payment_begateway_payment_type');
+
     if ($pm_type['card'] == 1) {
-      $payment_methods_array['types'][] = 'credit_card';
+        $cc = new \BeGateway\PaymentMethod\CreditCard;
+        $token->addPaymentMethod($cc);
     }
 
     if ($pm_type['halva'] == 1) {
-      $payment_methods_array['types'][] = 'halva';
+        $halva = new \BeGateway\PaymentMethod\CreditCardHalva;
+        $token->addPaymentMethod($halva);
     }
 
     if ($pm_type['erip'] == 1) {
-      $payment_methods_array['types'][] = 'erip';
-      $payment_methods_array['erip'] = array(
-        'order_id' => $order_info['order_id'],
-        'account_number' => $order_info['order_id'],
-        'service_no' => $this->config->get('payment_begateway_erip_service_no'),
-        'service_info' => array($order_array['description'])
-      );
+
+        $erip_data = array(
+            'order_id' => $order_info['order_id'],
+            'account_number' => ltrim($order_info['order_id']),
+            'service_info' => array($token->getDescription())
+        );
+
+        if (strlen($this->config->get('payment_begateway_erip_service_no')) > 0) {
+            $erip_data['service_no'] = this->config->get('payment_begateway_erip_service_no');
+        }
+
+        $erip = new \BeGateway\PaymentMethod\Erip($erip_data);
+        $token->addPaymentMethod($erip);
     }
 
-    $checkout_array = array(
-      'version' => '2.1',
-      'transaction_type' => $transaction_type,
-      'test' => intval($this->config->get('payment_begateway_test_mode')) == 1,
-      'settings' =>$setting_array,
-      'order' => $order_array,
-      'customer' => $customer_array
-      );
-
-    if (count($payment_methods_array['types']) > 0) {
-      $checkout_array['payment_method'] = $payment_methods_array;
+    if (intval($this->config->get('payment_begateway_test_mode')) == 1) {
+        $token->setTestMode(true);
     }
 
-    $token_json =  array('checkout' =>$checkout_array );
+    $response = $token->submit();
 
-    $this->load->model('checkout/order');
-
-    $post_string = json_encode($token_json);
-
-    $username=$this->config->get('payment_begateway_companyid');
-    $password=$this->config->get('payment_begateway_encyptionkey');
-    $ctp_url = 'https://' . $this->config->get('payment_begateway_domain_payment_page') . '/ctp/api/checkouts';
-
-    $curl = curl_init($ctp_url);
-    curl_setopt($curl, CURLOPT_PORT, 443);
-    curl_setopt($curl, CURLOPT_HEADER, 0);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-      'X-API-Version: ' . self::API_VERSION,
-      'Content-Type: application/json',
-      'Content-Length: '.strlen($post_string))) ;
-    curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
-    curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
-    curl_setopt($curl, CURLOPT_POST, 1);
-    curl_setopt($curl, CURLOPT_USERPWD, "$username:$password");
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_string);
-
-    $response = curl_exec($curl);
-    $curl_error = curl_error($curl);
-    $curl_errno = curl_errno($curl);
-    curl_close($curl);
-
-    if (!$response) {
-      $this->log->write("Payment token request failed: $curl_error ($curl_errno)");
-      return false;
-    }
-
-    $token = json_decode($response,true);
-
-    if ($token == NULL) {
-      $this->log->write("Payment token response parse error: $response");
-      return false;
-    }
-
-    if (isset($token['errors'])) {
-      $this->log->write("Payment token request validation errors: $response");
-      return false;
-    }
-
-    if (isset($token['response']) && isset($token['response']['message'])) {
-      $this->log->write("Payment token request error: $response");
-      return false;
-    }
-
-    if (isset($token['checkout']) && isset($token['checkout']['token'])) {
-      return $token['checkout'];
-    } else {
-      $this->log->write("No payment token in response: $response");
-      return false;
-    }
+    return $response;
   }
 
-  public function callback() {
+  public function return() {
 
     if (isset($this->session->data['order_id'])) {
       $order_id = $this->session->data['order_id'];
@@ -170,55 +110,79 @@ class Begateway extends \Opencart\System\Engine\Controller {
     }
 
     $this->load->model('checkout/order');
-    $order_info = $this->model_checkout_order->getOrder($order_id);
 
-    $this->response->redirect($this->url->link('checkout/success', '', 'SSL'));
+    $this->response->redirect($this->url->link('checkout/success', 'language=' . $this->config->get('config_language'), 'SSL'));
   }
 
-  public function callback1() {
+  public function webhook() {
 
-    $postData =  (string)file_get_contents("php://input");
+    $webhook = new \BeGateway\Webhook;
 
-    $post_array = json_decode($postData, true);
-
-    if (!isset($post_array['transaction'])) {
-      return;
-    }
-
-    $order_id = $post_array['transaction']['tracking_id'];
-
-    $order_id = $post_array['transaction']['tracking_id'];
-    $status = $post_array['transaction']['status'];
-
-    $transaction_id = $post_array['transaction']['uid'];
-    $transaction_message = $post_array['transaction']['message'];
-
-    $three_d = '';
-
-    if (isset($post_array['transaction']['three_d_secure_verification'])) {
-      $three_d = $post_array['transaction']['three_d_secure_verification']['pa_status'];
-      if (isset($three_d)) {
-        $three_d = '3-D Secure: ' . $three_d . '.';
-      } 
-    }
-
-    $this->log->write("Webhook received: $postData");
+    $this->log->write("Webhook received: " . $webhook->getRawResponse());
 
     $this->load->model('checkout/order');
 
+    $order_id = $webhook->getTrackingId();
+    $id = $webhook->getUid();
+    $message = $webhook->getMessage();
+
     $order_info = $this->model_checkout_order->getOrder($order_id);
 
-    if ($order_info) {
-      $this->model_checkout_order->addOrderHistory($order_id, $this->config->get('config_order_status_id'));
+    if (!$webhook->isAuthorized())
+        die('Not authorized');
 
-      if(isset($status) && $status == 'successful'){
-        $this->model_checkout_order->addOrderHistory($order_id, $this->config->get('payment_begateway_completed_status_id'), "UID: $transaction_id. $three_d Processor message: $transaction_message", true);
-      }
-      if(isset($status) && ($status == 'failed')){
-        $this->model_checkout_order->addOrderHistory($order_id, $this->config->get('payment_begateway_failed_status_id'), "UID: $transaction_id. Fail reason: $transaction_message", true);
-      }
+    if (!$order_info)
+        die('No order');
+
+    // $this->model_checkout_order->addHistory($order_id, $this->config->get('config_order_status_id'));
+
+    if ($webhook->isSuccess()) {
+        $this->model_checkout_order->addHistory(
+            $order_id,
+            $this->config->get('payment_begateway_completed_status_id'), 
+            "ID: $id Processor message: $message", true);
+    } elseif ($webhook->isFailed()) {
+        $this->model_checkout_order->addHistory(
+            $order_id,
+            $this->config->get('payment_begateway_failed_status_id'), 
+            "UID: $id. Fail reason: $message", true);
     }
   }
+
+  /**
+     * confirm
+     *
+     * @return json|string
+     */
+    public function confirm(): void
+    {
+        // loading example payment language
+        $this->load->language('extension/begateway/payment/begateway');
+        $json = [];
+        if (!isset($this->session->data['order_id'])) {
+            $json['error'] = $this->language->get('error_order');
+        }
+        
+        if (!isset($this->session->data['payment_method']) || $this->session->data['payment_method']['code'] != 'begateway.begateway') {
+            $json['error'] = $this->language->get('error_payment_method');
+        }
+
+        if (!$json) {
+
+            $this->load->model('checkout/order');
+            $response = $this->generateToken();
+
+            if ($response->isSuccess()) {
+                $this->model_checkout_order->addHistory($this->session->data['order_id'], $this->config->get('config_order_status_id'));
+                $json['redirect'] = $response->getRedirectUrl();
+            } else {
+                $json['error'] = $this->language->get('error_get_transaction');
+                $json['redirect'] = $this->url->link('checkout/failure', 'language=' . $this->config->get('config_language'), true);
+            }
+        }
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
 
   private function _language($lang_id) {
     $lang = substr($lang_id, 0, 2);
