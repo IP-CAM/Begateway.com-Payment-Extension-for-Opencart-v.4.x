@@ -43,6 +43,12 @@
               <input type="text" name="payment_begateway_domain_payment_page" value="{{ payment_begateway_domain_payment_page }}" placeholder="{{ entry_domain_payment_page }}" id="input-domain-page" class="form-control" />
             </div>
           </div>
+          <div class="row mb-3 required">
+            <label class="col-sm-2 col-form-label" for="input-expiry" data-bs-toggle="tooltip" title="{{ entry_expiry_help }}">{{ entry_expiry }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="payment_begateway_expiry" value="{{ payment_begateway_expiry }}" placeholder="{{ entry_expiry }}" id="input-expiry" class="form-control" />
+            </div>
+          </div>
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label" for="begateway_payment_type_card">{{ entry_payment_type_card }}</label>
             <div class="col-sm-10">

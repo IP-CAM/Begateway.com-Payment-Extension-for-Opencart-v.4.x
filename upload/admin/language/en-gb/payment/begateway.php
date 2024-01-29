@@ -37,7 +37,8 @@ $_['entry_payment_type_erip']		= 'Enable ERIP payments';
 $_['entry_payment_begateway_erip_service_no'] = 'ERIP service code';
 $_['entry_test_mode'] = 'Test mode';
 $_['entry_test_mode_help'] = 'Enable to accept test payments';
-
+$_['entry_expiry'] = 'Payment valid (minutes)';
+$_['entry_expiry_help'] = 'The value sets a period of time within which an order must be paid';
 
 // Error
 $_['error_permission']      = 'Warning: You do not have permission to modify the payment module!';
@@ -46,4 +47,4 @@ $_['error_encyptionkey']    = 'Shop secret key required!';
 $_['error_domain_payment_page']    = 'Payment page domain required!';
 $_['error_payment_type']		= 'At least one payment type is required!';
 $_['error_erip_service_no'] = 'ERIP service code required!';
-?>
+$_['error_expiry']		= 'Payment valid period is required!';

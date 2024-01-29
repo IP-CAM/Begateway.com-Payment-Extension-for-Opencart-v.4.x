@@ -19,7 +19,7 @@ class Begateway extends \Opencart\System\Engine\Controller {
     $this->load->model('checkout/order');
 
     $data['button_confirm'] = $this->language->get('button_confirm');
-    $data['confirm_url'] = $this->url->link('extension/begateway/payment/begateway|confirm', '', true);
+    $data['confirm_url'] = $this->url->link('extension/begateway/payment/begateway|confirm', 'language=' . $this->config->get('config_language'), true);
 
     return $this->load->view('extension/begateway/payment/begateway', $data);
   }
@@ -60,9 +60,9 @@ class Begateway extends \Opencart\System\Engine\Controller {
     $token->setCancelUrl($this->url->link('checkout/checkout', 'language=' . $this->config->get('config_language'), 'SSL'));
     $token->setNotificationUrl($callback_url);
 
-    #$token->setExpiryDate(date("c", intval($this->settings['payment_valid']) * 60 + time() + 1));
+    $token->setExpiryDate(date("c", intval($this->config->get('payment_begateway_expiry') * 60 + time() + 1)));
 
-    $token->setLanguage($this->_language($this->config->get('config_language')));
+    $token->setLanguage($this->language->get('code'));
 
     $pm_type = $this->config->get('payment_begateway_payment_type');
 
@@ -85,7 +85,7 @@ class Begateway extends \Opencart\System\Engine\Controller {
         );
 
         if (strlen($this->config->get('payment_begateway_erip_service_no')) > 0) {
-            $erip_data['service_no'] = this->config->get('payment_begateway_erip_service_no');
+            $erip_data['service_no'] = $this->config->get('payment_begateway_erip_service_no');
         }
 
         $erip = new \BeGateway\PaymentMethod\Erip($erip_data);
@@ -183,10 +183,4 @@ class Begateway extends \Opencart\System\Engine\Controller {
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
     }
-
-  private function _language($lang_id) {
-    $lang = substr($lang_id, 0, 2);
-    $lang = strtolower($lang);
-    return $lang;
-  }
 }

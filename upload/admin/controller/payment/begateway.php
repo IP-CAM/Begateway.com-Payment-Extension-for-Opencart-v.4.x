@@ -52,6 +52,8 @@ class Begateway extends \Opencart\System\Engine\Controller {
     $data['entry_payment_type_erip'] = $this->language->get('entry_payment_type_erip');
     $data['entry_test_mode'] = $this->language->get('entry_test_mode');
     $data['entry_test_mode_help'] = $this->language->get('entry_test_mode_help');
+    $data['entry_expiry'] = $this->language->get('entry_expiry');
+    $data['entry_expiry_help'] = $this->language->get('entry_expiry_help');
     $data['button_save'] = $this->language->get('button_save');
     $data['button_cancel'] = $this->language->get('button_cancel');
     $data['tab_general'] = $this->language->get('tab_general');
@@ -87,6 +89,7 @@ class Begateway extends \Opencart\System\Engine\Controller {
 	$data['payment_begateway_erip_service_no'] = $this->config->get('payment_begateway_erip_service_no');
     $data['payment_begateway_completed_status_id'] = $this->config->get('payment_begateway_completed_status_id');
     $data['payment_begateway_failed_status_id'] = $this->config->get('payment_begateway_failed_status_id');
+    $data['payment_begateway_expiry'] = $this->config->get('payment_begateway_expiry');
 
     $this->load->model('localisation/order_status');
 
