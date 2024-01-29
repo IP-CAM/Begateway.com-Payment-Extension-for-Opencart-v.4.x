@@ -11,7 +11,7 @@ class Begateway extends \Opencart\System\Engine\Controller {
   public function index(): void {
 
     $this->load->language('extension/begateway/payment/begateway');
-
+    
     $this->document->setTitle($this->language->get('heading_title'));
 
     $this->load->model('setting/setting');
@@ -80,6 +80,39 @@ class Begateway extends \Opencart\System\Engine\Controller {
     $data['action'] = $this->url->link('extension/begateway/payment/begateway.save', 'user_token=' . $this->session->data['user_token'], true);
 
     $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token']  . '&type=payment', true);
+
+    $this->load->model('localisation/language');
+    $languages = $this->model_localisation_language->getLanguages();
+
+    $data['languages'] = [];
+
+    foreach ($languages as $lang) {
+
+        if ((bool)$lang['status']) {
+
+            $opt_heading_title = 'payment_begateway_heading_title_' . $lang['code'];
+            $opt_method_title = 'payment_begateway_method_title_' . $lang['code'];
+
+            $lang['entry_heading_title_help'] = $this->language->get('entry_heading_title_help');
+            $lang['entry_method_title_help'] = $this->language->get('entry_method_title_help');
+            $lang['entry_heading_title'] = $this->language->get('entry_heading_title');
+            $lang['entry_method_title'] = $this->language->get('entry_method_title');
+
+            if ($this->language->get('code') != $lang['code']) {
+                $this->language->load('extension/begateway/payment/begateway', '', $lang['code']);
+            }
+
+            $data[$opt_heading_title] = !empty($this->config->get($opt_heading_title)) ? $this->config->get($opt_heading_title) : $this->language->get('payment_begateway_heading_title');
+            $data[$opt_method_title] = !empty($this->config->get($opt_method_title)) ? $this->config->get($opt_method_title) : $this->language->get('payment_begateway_method_title');
+            
+            $this->load->language('extension/begateway/payment/begateway');
+
+            $lang['heading_title'] = $data[$opt_heading_title];
+            $lang['method_title'] = $data[$opt_method_title];
+
+            $data['languages'] []= $lang;
+        }
+    }
 
     $data['payment_begateway_companyid'] = $this->config->get('payment_begateway_companyid');
     $data['payment_begateway_encyptionkey'] = $this->config->get('payment_begateway_encyptionkey');

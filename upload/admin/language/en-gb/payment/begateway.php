@@ -5,7 +5,7 @@ $_['text_edit']              = 'Edit configuration';
 
 // Text
 $_['text_extension']	    = 'Extensions';
-$_['text_success']        = 'Success: You have modified payment module!';
+$_['text_success']        = 'Success: You have modified payment extension!';
 $_['text_begateway']      = '<img src="view/image/payment/begateway.png" alt="" title="" style="border: 1px solid #EEEEEE;" />';
 
 // Entry
@@ -39,6 +39,13 @@ $_['entry_test_mode'] = 'Test mode';
 $_['entry_test_mode_help'] = 'Enable to accept test payments';
 $_['entry_expiry'] = 'Payment valid (minutes)';
 $_['entry_expiry_help'] = 'The value sets a period of time within which an order must be paid';
+$_['entry_heading_title'] = 'Payment method title for the user';
+$_['entry_heading_title_help'] = 'Will be displayed in the payment method selection window on the checkout page';
+$_['entry_method_title'] = 'Payment method name for the user';
+$_['entry_method_title_help'] = 'Will be shown in the payment method selection window on the checkout page';
+$_['payment_begateway_heading_title'] = 'Online payment';
+$_['payment_begateway_method_title'] = 'Credit card';
+
 
 // Error
 $_['error_permission']      = 'Warning: You do not have permission to modify the payment module!';

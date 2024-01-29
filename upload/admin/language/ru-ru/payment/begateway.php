@@ -5,7 +5,7 @@ $_['text_edit']              = 'Изменить настройки';
 
 // Text
 $_['text_extension']	    = 'Расширения';
-$_['text_success']        = 'Вы успешно изменили настройки модуля';
+$_['text_success']        = 'Вы успешно изменили настройки расширения!';
 $_['text_begateway']      = '<img src="view/image/payment/begateway.png" alt="" title="" style="border: 1px solid #EEEEEE;" />';
 
 // Entry
@@ -39,6 +39,12 @@ $_['entry_test_mode'] = 'Тестовый режим';
 $_['entry_test_mode_help'] = 'Включает возможность приема тестовых платежей';
 $_['entry_expiry'] = 'Оплата действительна (минут)';
 $_['entry_expiry_help'] = 'Укажите количество минут, в течение которых заказ должен быть оплачен';
+$_['entry_heading_title'] = 'Название способа оплаты для пользователя';
+$_['entry_heading_title_help'] = 'Будет показан в окне выбора способа оплаты на странице оформления заказа';
+$_['entry_method_title'] = 'Наименование метода оплаты для пользователя';
+$_['entry_method_title_help'] = 'Будет показан в окне выбора способа оплаты на странице оформления заказа';
+$_['payment_begateway_heading_title'] = 'Онлайн оплата';
+$_['payment_begateway_method_title'] = 'Банковская карта';
 
 // Error
 $_['error_permission']      = 'Внимание: У вас нет прав для изменения настроек модуля оплаты!';

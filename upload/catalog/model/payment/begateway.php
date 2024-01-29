@@ -21,15 +21,14 @@ class Begateway extends \Opencart\System\Engine\Model {
     $method_data = array();
 
     if ($status) {
-
         $option_data['begateway'] = [
             'code' => 'begateway.begateway',
-            'name' => $this->language->get('text_title')
+            'name' => $this->config->get('payment_begateway_method_title_' . $this->config->get('config_language'))
         ];
 
         $method_data = array(
             'code'       => 'begateway',
-            'name'       => $this->language->get('text_title'),
+            'name'       => $this->config->get('payment_begateway_heading_title_' . $this->config->get('config_language')),
             'option'     => $option_data,
             'sort_order' => $this->config->get('payment_begateway_sort_order')
       );
