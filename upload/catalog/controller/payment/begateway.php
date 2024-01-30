@@ -2,6 +2,9 @@
 namespace Opencart\Catalog\Controller\Extension\Begateway\Payment;
 
 require_once DIR_EXTENSION . 'begateway/system/library/vendor/autoload.php';
+require_once DIR_EXTENSION . 'begateway/system/library/Utils.php';
+
+use Begateway\Utils;
 
 class Begateway extends \Opencart\System\Engine\Controller {
   public function __construct($registry)
@@ -63,6 +66,9 @@ class Begateway extends \Opencart\System\Engine\Controller {
     $token->setExpiryDate(date("c", intval($this->config->get('payment_begateway_expiry') * 60 + time() + 1)));
 
     $token->setLanguage($this->language->get('code'));
+
+    $token->additional_data->setPlatformData('OpenCart v' . VERSION);
+    $token->additional_data->setIntegrationData('BeGateway Payment Extension v' . Utils::getModuleVersion(false));
 
     $pm_type = $this->config->get('payment_begateway_payment_type');
 
