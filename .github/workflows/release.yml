@@ -14,12 +14,12 @@ jobs:
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
-        filename: 'opencart-4-begateway-payment-extension.ocmod.zip'
-        path: './begateway'
+        filename: 'begateway.ocmod.zip'
+        directory: 'begateway'
         exclusions: '*.git* docker* LICENSE* Makefile README* *.zip /*docker/* /*sql/*'
 
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
-        artifacts: "opencart-4-begateway-payment-extension.ocmod.zip"
+        artifacts: "begateway.ocmod.zip"
         token: ${{ secrets.GITHUB_TOKEN }}

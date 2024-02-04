@@ -5,8 +5,8 @@
 ## Installation
 
 * Backup your webstore and database
-* Download from [Github releases page](https://github.com/begateway/opencart-4-payment-extension/releases) the latest extension archive `opencart-4-begateway-payment-extension.ocmod.zip`
-* Upload `opencart-4-begateway-payment-extension.ocmod.zip` to your OpenCart or ocStore installation using the administrator menu _Extensions_ -> _Installer_
+* Download from [Github releases page](https://github.com/begateway/opencart-4-payment-extension/releases) the latest extension archive `begateway.ocmod.zip`
+* Upload `begateway.ocmod.zip` to your OpenCart or ocStore installation using the administrator menu _Extensions_ -> _Installer_
 * Activate the extension in payment extensions (_Extensions_ -> _Extentsions_ -> _Payments_)
 * Configure the extension settings:
   * Shop Id
@@ -67,8 +67,8 @@ This command creates database records necessary to install the extension for dev
 ## Установка
 
 * Создайте резервную копию вашего магазина и базы данных
-* Скачайте со страницы [Github релизов](https://github.com/begateway/opencart-4-payment-extension/releases) архив расширения `opencart-4-begateway-payment-extension.ocmod.zip` 
-* Загрузите `opencart-4-begateway-payment-extension.ocmod.zip` в ваш OpenCart или ocStore с помощью меню адиминистратора _Расширения_ -> _Установщик_
+* Скачайте со страницы [Github релизов](https://github.com/begateway/opencart-4-payment-extension/releases) архив расширения `begateway.ocmod.zip` 
+* Загрузите `begateway.ocmod.zip` в ваш OpenCart или ocStore с помощью меню адиминистратора _Расширения_ -> _Установщик_
 * Активируйте расширение BeGateway в расширениях оплаты (_Расширения_ -> _Расширения_ -> _Оплата_)
 * Задайте в настройках расширения BeGateway:
   * Id магазина
