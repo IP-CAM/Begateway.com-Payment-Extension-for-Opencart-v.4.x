@@ -1,20 +1,20 @@
-# OpenCart 4 payment module
+# OpenCart 4 payment extension
 
-[Русская версия](#Модуль-оплаты-opencart-4)
+[Русская версия](#Расширение-оплаты-opencart-4)
 
 ## Installation
 
 * Backup your webstore and database
-* Download from [Github releases page](https://github.com/begateway/opencart-4-payment-module/releases) the latest module archive `opencart-4-begateway-payment-extension.ocmod.zip`
+* Download from [Github releases page](https://github.com/begateway/opencart-4-payment-extension/releases) the latest extension archive `opencart-4-begateway-payment-extension.ocmod.zip`
 * Upload `opencart-4-begateway-payment-extension.ocmod.zip` to your OpenCart or ocStore installation using the administrator menu _Extensions_ -> _Installer_
-* Activate the module in payment extensions (_Extensions_ -> _Extentsions_ -> _Payments_)
-* Configure the module settings:
+* Activate the extension in payment extensions (_Extensions_ -> _Extentsions_ -> _Payments_)
+* Configure the extension settings:
   * Shop Id
   * Shop secret key
   * Shop public key
   * Payment page domain
   * Order statuses for successfuly processed payment and for failed one
-  * Enabled the module
+  * Enabled the extension
   * And optionally setup sort order id if you want to move the payment
     option higher level in payment method list
 
@@ -50,7 +50,7 @@ Use the following test card to make failed test payment:
 
 ## Contributing
 
-Issue pull requests or send feature requests or open [a new issue]( https://github.com/begateway/opencart-4-payment-module/issues/new)
+Issue pull requests or send feature requests or open [a new issue]( https://github.com/begateway/opencart-4-payment-extension/issues/new)
 
 ## Development
 
@@ -60,24 +60,24 @@ After installing OpenCart, execute the following command in the `db` container:
 
 This command creates database records necessary to install the extension for development purposes.
 
-# Модуль оплаты OpenCart 4
+# Расширение оплаты OpenCart 4
 
-[English version](#opencart-4-payment-module)
+[English version](#opencart-4-payment-extension)
 
 ## Установка
 
 * Создайте резервную копию вашего магазина и базы данных
-* Скачайте со страницы [Github релизов](https://github.com/begateway/opencart-4-payment-module/releases) архив модуля `opencart-4-begateway-payment-extension.ocmod.zip` 
+* Скачайте со страницы [Github релизов](https://github.com/begateway/opencart-4-payment-extension/releases) архив расширения `opencart-4-begateway-payment-extension.ocmod.zip` 
 * Загрузите `opencart-4-begateway-payment-extension.ocmod.zip` в ваш OpenCart или ocStore с помощью меню адиминистратора _Расширения_ -> _Установщик_
-* Активируйте модуль BeGateway в модулях оплаты (_Расширения_ -> _Расширения_ -> _Оплата_)
-* Задайте в настройках модуля BeGateway:
+* Активируйте расширение BeGateway в расширениях оплаты (_Расширения_ -> _Расширения_ -> _Оплата_)
+* Задайте в настройках расширения BeGateway:
   * Id магазина
   * Ключ магазина
   * Публичный ключ магазина
   * Домен страницы оплаты
   * Статусы заказа в случае успешной и не успешной оплаты
-  * Включите модуль
-  * Опционально задайте идентификатор модуля для сортировки его в списке способов оплаты. Меньшее значение подымает модуль в верх списка
+  * Включите расширение
+  * Опционально задайте идентификатор расширения для сортировки его в списке способов оплаты. Меньшее значение подымает способ оплаты в верх списка
 
 ## Примечания
 
@@ -110,14 +110,14 @@ This command creates database records necessary to install the extension for dev
   * Месяц срока действия карты: 01/30
   * CVC: 123
 
-## Нашли ошибку или у вас есть предложение по улучшению модуля?
+## Нашли ошибку или у вас есть предложение по улучшению расширения?
 
-Создайте [запрос](https://github.com/begateway/opencart-4-payment-module/issues/new)
+Создайте [запрос](https://github.com/begateway/opencart-4-payment-extension/issues/new)
 
 ## Разработка
 
 После установки OpenCart выполните следующую команду в контейнере `db`:
 
         mysql -uroot -proot opencart < /install_begateway_extension.sql
-        
+
 Эта команда создает записи в базе данных, необходимые для установки расширения в целях разработки.
