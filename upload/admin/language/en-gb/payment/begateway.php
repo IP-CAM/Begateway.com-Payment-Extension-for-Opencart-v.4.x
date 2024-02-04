@@ -51,6 +51,7 @@ $_['payment_begateway_method_title'] = 'Credit card';
 $_['error_permission']      = 'Warning: You do not have permission to modify the payment module!';
 $_['error_companyid']       = 'Shop Id required!';
 $_['error_encyptionkey']    = 'Shop secret key required!';
+$_['error_publickey']       = 'Shop public key required!';
 $_['error_domain_payment_page']    = 'Payment page domain required!';
 $_['error_payment_type']		= 'At least one payment type is required!';
 $_['error_erip_service_no'] = 'ERIP service code required!';

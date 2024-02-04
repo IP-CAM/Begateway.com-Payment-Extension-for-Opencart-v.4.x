@@ -51,13 +51,13 @@
           </div>
 
 {% for l in languages %}
-          <div class="row mb-3 required">
+          <div class="row mb-3">
             <label class="col-sm-2 col-form-label" for="input-heading-title-{{ l.code }}" data-bs-toggle="tooltip" title="{{ l.entry_heading_title_help }}">{{ l.entry_heading_title }} <img src="{{l.image}}"></label>
             <div class="col-sm-10">
               <input type="text" name="payment_begateway_heading_title_{{ l.code }}" value="{{ l.heading_title }}" placeholder="{{ l.heading_title }}" id="input-heading-title-{{ l.code }}" class="form-control" />
             </div>
           </div>
-          <div class="row mb-3 required">
+          <div class="row mb-3">
             <label class="col-sm-2 col-form-label" for="input-method-title-{{ l.code }}" data-bs-toggle="tooltip" title="{{ l.entry_method_title_help }}">{{ l.entry_method_title }} <img src="{{l.image}}"></label>
             <div class="col-sm-10">
               <input type="text" name="payment_begateway_method_title_{{ l.code }}" value="{{ l.method_title }}" placeholder="{{ l.method_title }}" id="input-method-title-{{ l.code }}" class="form-control" />

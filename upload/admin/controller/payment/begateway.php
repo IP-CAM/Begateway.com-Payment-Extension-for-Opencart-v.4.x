@@ -161,6 +161,12 @@ class Begateway extends \Opencart\System\Engine\Controller {
             $json['error'] = $this->language->get('error_permission');
         }
 
+        $validate = $this->validate($this->request->post);
+
+        if ($validate) {
+            $json['error'] = $validate;
+        }
+
         if (!$json) {
             $this->load->model('setting/setting');
             $mergedConfiguration = array_merge($savedSettings, $this->request->post);
@@ -170,5 +176,28 @@ class Begateway extends \Opencart\System\Engine\Controller {
         }
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
+    }
+
+    /** validate settings metod
+     *
+     * @return null|string
+    */
+    protected function validate($request) {
+        if (empty(trim($request['payment_begateway_companyid'])))
+          return $this->language->get('error_companyid');
+
+        if (empty(trim($request['payment_begateway_encyptionkey'])))
+          return $this->language->get('error_encyptionkey');
+
+          if (empty(trim($request['payment_begateway_publickey'])))
+          return $this->language->get('error_publickey');
+
+        if (empty(trim($request['payment_begateway_domain_payment_page'])))
+          return $this->language->get('error_domain_payment_page');
+
+          if (empty($request['payment_begateway_expiry']) || intval($request['payment_begateway_expiry']) <= 0)
+          return $this->language->get('error_expiry');
+
+        return null;
     }
 }
