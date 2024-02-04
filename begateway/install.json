@@ -1,7 +1,6 @@
 {
-    "name": "beGateway payment module",
+    "name": "beGateway Payment",
     "version": "4.0.0",
-    "author": "beGateway",
-    "link": "https://www.begateway.com",
-    "instruction": ""
+    "author": "begateway",
+    "link": "https://www.begateway.com"
 }
