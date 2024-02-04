@@ -15,7 +15,7 @@ jobs:
       with:
         type: 'zip'
         filename: 'opencart-4-begateway-payment-extension.ocmod.zip'
-        exclusions: '*.git* docker* LICENSE* Makefile README* *.zip /*docker/*'
+        exclusions: '*.git* docker* LICENSE* Makefile README* *.zip /*docker/* sql*'
 
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0

@@ -13,7 +13,7 @@ services:
       - NET_ADMIN
     tty: true
     volumes:
-      - ./upload:/var/www/html/extension/begateway
+      - ./begateway:/var/www/html/extension/begateway
 
   opencart:
     build:
