@@ -2,6 +2,8 @@
 -- Dumping data for table `oc_extension`
 --
 
+USE `opencart`;
+
 LOCK TABLES `oc_extension` WRITE;
 /*!40000 ALTER TABLE `oc_extension` DISABLE KEYS */;
 INSERT INTO `oc_extension` VALUES
