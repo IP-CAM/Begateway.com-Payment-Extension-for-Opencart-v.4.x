@@ -54,7 +54,6 @@ class Begateway extends \Opencart\System\Engine\Controller {
     }
 
     $callback_url = $this->url->link('extension/begateway/payment/begateway|webhook', '', 'SSL');
-    $callback_url = str_replace('0.0.0.0', '87fe-178-127-77-205.ngrok-free.app', $callback_url);
     $callback_url = str_replace('0.0.0.0', 'webhook.begateway.com:8443', $callback_url);
     
     $token->setSuccessUrl($this->url->link('extension/begateway/payment/begateway|return', '', 'SSL'));
@@ -108,15 +107,7 @@ class Begateway extends \Opencart\System\Engine\Controller {
   }
 
   public function return() {
-
-    if (isset($this->session->data['order_id'])) {
-      $order_id = $this->session->data['order_id'];
-    } else {
-      $order_id = 0;
-    }
-
     $this->load->model('checkout/order');
-
     $this->response->redirect($this->url->link('checkout/success', 'language=' . $this->config->get('config_language'), 'SSL'));
   }
 
