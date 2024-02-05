@@ -2,7 +2,7 @@
 namespace Opencart\Catalog\Controller\Extension\Begateway\Payment;
 
 require_once DIR_EXTENSION . 'begateway/system/library/vendor/autoload.php';
-require_once DIR_EXTENSION . 'begateway/system/library/Utils.php';
+require_once DIR_EXTENSION . 'begateway/system/library/utils.php';
 
 use Begateway\Utils;
 

@@ -1,7 +1,7 @@
 <?php
 namespace Opencart\Admin\Controller\Extension\Begateway\Payment;
 
-require_once DIR_EXTENSION . 'begateway/system/library/Utils.php';
+require_once DIR_EXTENSION . 'begateway/system/library/utils.php';
 
 use Begateway\Utils;
 
